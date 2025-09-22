@@ -6,6 +6,7 @@ export default defineConfig({
   model: {},
   initialState: {},
   request: {},
+  vite:{},
   layout: {
     title: '@umijs/max',
   },
