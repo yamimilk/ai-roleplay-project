@@ -6,7 +6,7 @@
 <mapper namespace="cdu.zjy.topictwo.mapper.RoleMapper">
 
     <!-- 根据 ID 查询角色 -->
-    <select id="getRoleById" resultType="Role">
+    <select id="getRoleById" resultType="cdu.zjy.topictwo.model.Role">
         SELECT id, name, background, catchphrase
         FROM roles
         WHERE id = #{id}
@@ -14,7 +14,7 @@
 
 
     <!-- 查询所有角色 -->
-    <select id="getAllRoles" resultType="Role">
+    <select id="getAllRoles" resultType="cdu.zjy.topictwo.model.Role">
         SELECT id, name, background, catchphrase
         FROM roles
     </select>
