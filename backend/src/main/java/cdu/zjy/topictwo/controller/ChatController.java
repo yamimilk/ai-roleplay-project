@@ -44,8 +44,8 @@ public class ChatController {
             StringBuilder sb = new StringBuilder();
             sb.append("你现在需要完全扮演以下角色，与用户对话时必须保持一致：\n");
             sb.append("- 角色名：").append(role.getName()).append("\n");
-            if (role.getDescription() != null) {
-                sb.append("- 简介：").append(role.getDescription()).append("\n");
+            if (role.getBackground() != null) {
+                sb.append("- 简介：").append(role.getBackground()).append("\n");
             }
             if (role.getPersonaPrompt() != null) {
                 sb.append("- 人设与说话风格：").append(role.getPersonaPrompt()).append("\n");

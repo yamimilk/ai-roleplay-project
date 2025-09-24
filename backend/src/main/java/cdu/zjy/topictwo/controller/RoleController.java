@@ -1,5 +1,6 @@
 package cdu.zjy.topictwo.controller;
 
+import cdu.zjy.topictwo.dto.AllRoleDTO;
 import cdu.zjy.topictwo.model.Role;
 import cdu.zjy.topictwo.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,21 @@ public class RoleController {
     @Autowired
     private  RoleService roleService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Role> getAllRoles() {
         return roleService.getAllRoles();
     }
 
-//    @GetMapping
-//    public Role getRoleById(@RequestParam String id) {
-//        return roleService.getRoleById(id);
-//    }
+    @GetMapping
+    public Role getRoleById(@RequestParam String id) {
+        return roleService.getRoleById(id);
+    }
+
+    @GetMapping("/all/name")
+    public List<AllRoleDTO> getAllRolesName(){
+        return roleService.getAllRolesName();
+    }
+
+
 
 }

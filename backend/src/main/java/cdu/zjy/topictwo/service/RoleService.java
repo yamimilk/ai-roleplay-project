@@ -1,5 +1,6 @@
 package cdu.zjy.topictwo.service;
 
+import cdu.zjy.topictwo.dto.AllRoleDTO;
 import cdu.zjy.topictwo.mapper.RoleMapper;
 import cdu.zjy.topictwo.model.Role;
 import org.springframework.stereotype.Service;
@@ -11,4 +12,6 @@ public interface RoleService {
     //void addRole(Role role);
     Role getRoleById(String id);
     List<Role> getAllRoles();
+    Integer getRoleCount();
+    List<AllRoleDTO> getAllRolesName();
 }

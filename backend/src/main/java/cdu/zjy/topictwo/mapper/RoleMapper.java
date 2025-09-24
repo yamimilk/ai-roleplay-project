@@ -1,5 +1,6 @@
 package cdu.zjy.topictwo.mapper;
 
+import cdu.zjy.topictwo.dto.AllRoleDTO;
 import cdu.zjy.topictwo.model.Role;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,4 +11,8 @@ public interface RoleMapper {
     Role getRoleById(String id);
 
     List<Role> getAllRoles();
+    int getRoleCount();
+    Role addRole(Role role);
+
+    List<AllRoleDTO> getAllRolesName();
 }

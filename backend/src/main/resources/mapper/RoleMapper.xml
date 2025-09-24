@@ -4,6 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="cdu.zjy.topictwo.mapper.RoleMapper">
+    <insert id="addRole">
+        INSERT INTO roles (name, background, catchphrase)
+        VALUES (#{name}, #{background}, #{catchphrase})
+    </insert>
 
     <!-- 根据 ID 查询角色 -->
     <select id="getRoleById" resultType="cdu.zjy.topictwo.model.Role">
@@ -15,8 +19,16 @@
 
     <!-- 查询所有角色 -->
     <select id="getAllRoles" resultType="cdu.zjy.topictwo.model.Role">
-        SELECT id, name, background, catchphrase
-        FROM roles
+        SELECT * FROM roles
     </select>
 
+    <!-- 统计角色数量 -->
+    <select id="getRoleCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM roles
+    </select>
+
+    <select id="getAllRolesName" resultType="cdu.zjy.topictwo.dto.AllRoleDTO">
+        SELECT id , name
+        FROM roles;
+    </select>
 </mapper>

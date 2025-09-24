@@ -1,4 +1,7 @@
- # MyBatis??
+server:
+  port: 8080
+
+# MyBatis??
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: cdu.zjy.topictwo.model
@@ -19,21 +22,21 @@ llm:
   api-key: sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0
   model: deepseek-v3.1
 
-logging:
-#  level:
-#    root: info
-#    org.mybatis: DEBUG
-#    cdu.zjy.topictwo.mapper: DEBUG
-  file:
-    name: logs/topic-two.log
-  pattern:
-    console: "'%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'"
-    file: "'%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'"
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-      total-size-cap: 100MB
-      file-name-pattern: logs/ptrs-ssm.%d{yyyy-MM-dd}.log
-      max-history: 30
+#logging:
+##  level:
+##    root: info
+##    org.mybatis: DEBUG
+##    cdu.zjy.topictwo.mapper: DEBUG
+#  file:
+#    name: logs/topic-two.log
+#  pattern:
+#    console: "'%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'"
+#    file: "'%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'"
+#  logback:
+#    rollingpolicy:
+#      max-file-size: 10MB
+#      total-size-cap: 100MB
+#      file-name-pattern: logs/topic.%d{yyyy-MM-dd}.log
+#      max-history: 30
 
 
