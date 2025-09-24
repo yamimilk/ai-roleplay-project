@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface ConversationMapper {
     Conversation selectById(Long id);
-    List<Conversation> selectAll();
+    List<Conversation> selectAll(int roleId);
     void insert(Conversation conversation);
     void updateLastMessage(@Param("conversationId") Long conversationId,
                            @Param("lastMessage") String lastMessage);

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class Role {
-    private int id;            // 唯一标识
+    private int roleId;            // 唯一标识
     private String name;          // 角色名称
     private String code;
     private String personaPrompt; // persona 提示词

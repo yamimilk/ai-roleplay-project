@@ -10,6 +10,7 @@ import java.util.Map;
 @Service
 public interface ChatService {
     ChatResponse handleSendMessage(ChatRequest request);
-    List<Map<String, Object>> listConversations();
+    List<Map<String, Object>> listConversations(int roleId);
     Map<String, Object> getConversationMessages(Long id);
+    ChatResponse createConversation(ChatRequest request);
 }

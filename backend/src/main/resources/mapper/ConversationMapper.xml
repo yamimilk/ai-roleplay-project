@@ -18,7 +18,7 @@
     </select>
 
     <select id="selectAll" resultMap="ConversationResultMap">
-        SELECT * FROM conversation ORDER BY updated_at DESC
+        SELECT * FROM conversation WHERE role_id = #{roleId} ORDER BY updated_at DESC
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="conversationId">

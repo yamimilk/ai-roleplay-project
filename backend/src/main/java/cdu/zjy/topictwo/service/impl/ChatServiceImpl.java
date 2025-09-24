@@ -45,6 +45,7 @@ public class ChatServiceImpl implements ChatService {
             conversation.setRoleName(role != null ? role.getName() : "未知角色");
             conversation.setLastMessage(request.getMessage());
             conversation.setUpdatedAt(LocalDateTime.now());
+            conversation.setUserId("iij"); // 临时测试用户
             conversationMapper.insert(conversation);
             conversationId = conversation.getConversationId();
         }
@@ -105,7 +106,7 @@ public class ChatServiceImpl implements ChatService {
                 aiMsg.getCreatedAt().format(formatter));
 
         ChatResponse response = new ChatResponse();
-        response.setSessionId(conversationId.toString());
+//        response.setSessionId(conversationId.toString());
         response.setConversationId(conversationId);
         response.setMessages(List.of(userDto, aiDto));
 
@@ -116,8 +117,8 @@ public class ChatServiceImpl implements ChatService {
      * 获取会话列表
      */
     @Override
-    public List<Map<String, Object>> listConversations() {
-        List<Conversation> conversations = conversationMapper.selectAll();
+    public List<Map<String, Object>> listConversations(int roleId) {
+        List<Conversation> conversations = conversationMapper.selectAll(roleId);
 
         return conversations.stream()
                 .map(c -> {
@@ -154,4 +155,25 @@ public class ChatServiceImpl implements ChatService {
 
         return res;
     }
+
+    //新建对话
+    @Override
+    public ChatResponse createConversation(ChatRequest request) {
+        Role role = roleService.getRoleById(request.getRoleId());
+        Conversation conversation = new Conversation();
+        conversation.setRoleId(Long.valueOf(request.getRoleId()));
+        conversation.setRoleName(role != null ? role.getName() : "未知角色");
+        conversation.setUpdatedAt(LocalDateTime.now());
+        conversation.setLastMessage(request.getMessage());
+        conversation.setUserId("iij"); // TODO: 替换为真实登录用户
+        conversationMapper.insert(conversation);
+
+
+        ChatResponse response = new ChatResponse();
+        response.setConversationId(conversation.getConversationId());
+//        response.setMessages(List.of());
+//        response.setname(conversation.getRoleName());
+        return response;
+    }
+
 }

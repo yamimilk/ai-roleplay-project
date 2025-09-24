@@ -42,9 +42,9 @@ public class ChatController {
     /**
      * 获取会话列表
      */
-    @GetMapping("/conversations")
-    public List<Map<String, Object>> listConversations() {
-        return chatService.listConversations();
+    @GetMapping("/conversations/{roleId}")
+    public List<Map<String, Object>> listConversations(@PathVariable int roleId) {
+        return chatService.listConversations(roleId);
     }
 
     /**
@@ -53,5 +53,13 @@ public class ChatController {
     @GetMapping("/conversations/{id}/messages")
     public Map<String, Object> getConversationMessages(@PathVariable Long id) {
         return chatService.getConversationMessages(id);
+    }
+
+    /**
+     * 新建会话
+     */
+    @PostMapping("/createConversation")
+    public ChatResponse createConversation(@RequestBody ChatRequest request) {
+        return chatService.createConversation(request);
     }
 }

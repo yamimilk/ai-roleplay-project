@@ -21,8 +21,8 @@ public class RoleController {
     }
 
     @GetMapping
-    public Role getRoleById(@RequestParam String id) {
-        return roleService.getRoleById(id);
+    public Role getRoleById(@RequestParam String roleId) {
+        return roleService.getRoleById(roleId);
     }
 
     @GetMapping("/all/name")
