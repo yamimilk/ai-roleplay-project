@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessageDTO {
-    private String role;      // user / assistant
+    private String user;      // 消息发送方
     private String content;   // 消息内容
-    private String timestamp; // ISO 格式时间戳
+    private String createdAt; // ISO 格式时间戳
 }

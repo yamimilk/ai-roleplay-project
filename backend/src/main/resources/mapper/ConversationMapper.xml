@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cdu.zjy.topictwo.mapper.ConversationMapper">
+
+    <resultMap id="ConversationResultMap" type="cdu.zjy.topictwo.model.Conversation">
+        <id property="conversationId" column="conversation_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="lastMessage" column="last_message"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="ConversationResultMap">
+        SELECT * FROM conversation WHERE conversation_id = #{conversation_id}
+    </select>
+
+    <select id="selectAll" resultMap="ConversationResultMap">
+        SELECT * FROM conversation ORDER BY updated_at DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="conversationId">
+        INSERT INTO conversation (role_id, role_name, last_message, updated_at)
+        VALUES (#{roleId}, #{roleName}, #{lastMessage}, NOW())
+    </insert>
+
+    <update id="updateLastMessage">
+        UPDATE conversation
+        SET last_message = #{lastMessage}, updated_at = NOW()
+        WHERE conversation_id = #{conversationId}
+    </update>
+
+</mapper>

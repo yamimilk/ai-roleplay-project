@@ -9,10 +9,8 @@ import java.util.List;
 @Mapper
 public interface RoleMapper {
     Role getRoleById(String id);
-
     List<Role> getAllRoles();
     int getRoleCount();
     Role addRole(Role role);
-
     List<AllRoleDTO> getAllRolesName();
 }

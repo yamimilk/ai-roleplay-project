@@ -10,6 +10,12 @@ export default defineConfig({
   layout: {
     title: '@umijs/max',
   },
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+    },
+  },
   routes: [
     { path: '/', redirect: '/chat' },
     { name: '登录', path: '/login', component: './Login',layout: false },
