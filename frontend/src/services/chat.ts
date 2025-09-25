@@ -86,5 +86,33 @@ export async function createConversation(params: CreateConversationParams) {
   });
 }
 
+// ---- Voice Chat Upload ----
+
+export interface VoiceChatResponse {
+  sessionId?: string;
+  userText?: string;
+  aiText?: string;
+  audioUrl?: string; // AI 生成语音
+}
+
+export async function uploadVoiceChat(file: Blob, conversationId?: number, roleId?: string) {
+  const form = new FormData();
+
+  // 使用时间戳生成文件名，确保后缀 wav
+  const filename = `${Date.now()}.wav`;
+  form.append('file', file, filename);
+
+  if (roleId) form.append('roleId', roleId);
+  if (conversationId !== undefined && conversationId !== null) {
+    form.append('conversationId', String(conversationId));
+  }
+
+  return request<VoiceChatResponse>('/api/voice/chat', {
+    method: 'POST',
+    data: form,
+  });
+}
+
+
 
 

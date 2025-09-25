@@ -11,5 +11,6 @@ public class Message {
     private String sender; // user / role
     private String content;
     private LocalDateTime createdAt;
+    private String audioUrl; // 保存语音文件路径或URL
 }
 

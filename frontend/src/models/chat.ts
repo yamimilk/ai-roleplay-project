@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createConversation, getConversationMessages, listConversations, sendMessage } from '@/services/chat';
 import type { ConversationItem } from '@/components/Chat/ConversationList';
 import type { ChatMessage } from '@/components/Chat/MessageList';
+import { uploadVoiceChat } from '@/services/chat';
 
 export default function useChatModel() {
   const [sessionId, setSessionId] = useState<string | undefined>();
@@ -136,6 +137,91 @@ export default function useChatModel() {
     }
   };
 
+  const sendVoice = async (blob: Blob, durationMs?: number) => {
+    const cid = ensureActive();
+    const tempUrl = URL.createObjectURL(blob);
+    const tempId = `${Date.now()}-v`;
+  
+    // 1️⃣ 乐观更新：显示“上传中”的语音气泡
+    setMessagesMap((m) => ({
+      ...m,
+      [cid]: [...(m[cid] || []), {
+        id: tempId,
+        role: 'user',
+        type: 'audio',
+        content: '',
+        audioUrl: tempUrl,
+        durationMs,
+        status: 'uploading'
+      }],
+    }));
+  
+    try {
+      // 2️⃣ 上传语音到后端
+      const resp = await uploadVoiceChat(blob, activeConversationServerId, roleId);
+  
+      // 3️⃣ 更新 sessionId（如果返回）
+      if (resp.sessionId) setSessionId(resp.sessionId);
+  
+      // 4️⃣ 替换临时语音气泡状态为 done，并更新 URL 为后端返回的可播放 URL
+      setMessagesMap((m) => ({
+        ...m,
+        [cid]: (m[cid] || []).map((msg) =>
+          msg.id === tempId
+            ? { ...msg, status: 'done', audioUrl: resp.audioUrl || msg.audioUrl }
+            : msg
+        ),
+      }));
+  
+      // 5️⃣ 将识别出的用户文本和 AI 回复追加为文本气泡
+      const append: ChatMessage[] = [];
+      if (resp.userText) {
+        append.push({
+          id: `${Date.now()}-u2`,
+          role: 'user',
+          content: resp.userText,
+          type: 'text'
+        });
+      }
+      if (resp.aiText) {
+        append.push({
+          id: `${Date.now()}-a2`,
+          role: 'assistant',
+          content: resp.aiText,
+          type: 'text'
+        });
+      }
+  
+      if (append.length) {
+        setMessagesMap((m) => ({
+          ...m,
+          [cid]: [...(m[cid] || []), ...append]
+        }));
+  
+        // 更新会话列表的 lastMessage 和更新时间
+        setConversations((arr) =>
+          arr.map((c) =>
+            c.id === cid
+              ? { ...c, lastMessage: append[append.length - 1].content, updatedAt: new Date().toLocaleTimeString() }
+              : c
+          )
+        );
+      }
+  
+    } catch (e) {
+      console.error('上传语音失败', e);
+  
+      // 6️⃣ 上传失败，更新状态
+      setMessagesMap((m) => ({
+        ...m,
+        [cid]: (m[cid] || []).map((msg) =>
+          msg.id === tempId ? { ...msg, status: 'failed' } : msg
+        ),
+      }));
+    }
+  };
+  
+
   const dedupeMergeMessages = (existing: ChatMessage[], incoming: ChatMessage[]) => {
     if (incoming.length === 0) return existing;
     // 避免重复添加同一条用户消息：根据角色+内容在末尾进行简单去重
@@ -172,6 +258,7 @@ export default function useChatModel() {
     selectConversation,
     send,
     sending,
+    sendVoice,
     createNewConversation,
   };
 }

@@ -1,7 +1,5 @@
 package cdu.zjy.topictwo.model;
 
-
-
 import lombok.Data;
 import java.time.LocalDateTime;
 

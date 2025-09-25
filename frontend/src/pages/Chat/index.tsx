@@ -20,7 +20,7 @@ const ChatPage: React.FC = () => {
   const {
     roleId, setRoleId,
     conversations, activeId, messages, selectConversation,
-    send, sending, createNewConversation,
+    send, sending, createNewConversation, sendVoice,
   } = useChatModel();
 
   const [roleOptions, setRoleOptions] = useState<{ label: string; value: string }[]>([]);
@@ -108,7 +108,7 @@ const ChatPage: React.FC = () => {
             <MessageList messages={messages} />
           </div>
           <div style={{ padding: 12, borderTop: '1px solid #f0f0f0' }}>
-            <MessageInput onSend={send} loading={sending} />
+            <MessageInput onSend={send} onSendVoice={sendVoice} loading={sending} />
           </div>
         </Content>
       </Layout>

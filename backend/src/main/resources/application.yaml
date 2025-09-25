@@ -22,6 +22,20 @@ llm:
   api-key: sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0
   model: deepseek-v3.1
 
+app:
+  upload:
+    audio-path: D:\Junior\ai-roleplay-project\backend\uploads\audio
+
+
+asr:
+  base-url: https://openai.qiniu.com/v1
+  api-key: sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0
+  model: asr
+
+tts:
+  base-url: https://openai.qiniu.com/v1
+  api-key: sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0
+  model: tts
 #logging:
 ##  level:
 ##    root: info

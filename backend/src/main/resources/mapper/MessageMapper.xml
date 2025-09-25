@@ -11,6 +11,7 @@
         <result property="sender" column="sender"/>
         <result property="content" column="content"/>
         <result property="createdAt" column="created_at"/>
+        <result property="audioUrl" column="audio_url"/>
     </resultMap>
 
     <select id="selectByConversationId" resultMap="MessageResultMap">
@@ -18,8 +19,8 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO message (conversation_id, sender, content, created_at)
-        VALUES (#{conversationId}, #{sender}, #{content}, NOW())
+        INSERT INTO message (conversation_id, sender, content, created_at, audio_url)
+        VALUES (#{conversationId}, #{sender}, #{content}, #{createdAt}, #{audioUrl})
     </insert>
 
 </mapper>

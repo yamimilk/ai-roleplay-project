@@ -1,10 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { Avatar, List, Typography } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Avatar, List, Typography, Spin } from 'antd';
 
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
-  content: string;
+  type?: 'text' | 'audio';
+  content: string; // for text
+  audioUrl?: string; // for audio
+  durationMs?: number;
+  status?: 'uploading' | 'failed' | 'done';
   avatar?: string;
 }
 
@@ -26,18 +30,46 @@ const MessageList: React.FC<Props> = ({ messages }) => {
           <List.Item style={{ border: 'none', padding: '8px 0' }}>
             <div style={{ width: '100%', display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
               {m.role === 'assistant' && <Avatar src={m.avatar} style={{ marginRight: 8 }}>A</Avatar>}
-              <div
-                style={{
-                  maxWidth: '70%',
-                  background: m.role === 'user' ? '#1677ff' : '#f5f5f5',
-                  color: m.role === 'user' ? '#fff' : 'inherit',
-                  borderRadius: 8,
-                  padding: '8px 12px',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                <Typography.Text style={{ color: 'inherit' }}>{m.content}</Typography.Text>
-              </div>
+              {m.type !== 'audio' ? (
+                <div
+                  style={{
+                    maxWidth: '70%',
+                    background: m.role === 'user' ? '#1677ff' : '#f5f5f5',
+                    color: m.role === 'user' ? '#fff' : 'inherit',
+                    borderRadius: 8,
+                    padding: '8px 12px',
+                    whiteSpace: 'pre-wrap',
+                  }}
+                >
+                  <Typography.Text style={{ color: 'inherit' }}>{m.content}</Typography.Text>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    maxWidth: '70%',
+                    background: m.role === 'user' ? '#1677ff' : '#f5f5f5',
+                    color: m.role === 'user' ? '#fff' : 'inherit',
+                    borderRadius: 8,
+                    padding: '8px 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                  }}
+                  className="voice-message"
+                >
+                  {m.status === 'uploading' ? (
+                    <Spin size="small" />
+                  ) : m.status === 'failed' ? (
+                    <Typography.Text style={{ color: m.role === 'user' ? '#fff' : '#ff4d4f' }}>!</Typography.Text>
+                  ) : (
+                    <button onClick={() => {
+                      const audio = new Audio(m.audioUrl);
+                      audio.play();
+                    }}>▶</button>
+                  )}
+                  <span>{formatDuration(m.durationMs)}</span>
+                </div>
+              )}
               {m.role === 'user' && <Avatar style={{ marginLeft: 8 }}>U</Avatar>}
             </div>
           </List.Item>
@@ -47,6 +79,14 @@ const MessageList: React.FC<Props> = ({ messages }) => {
     </div>
   );
 };
+
+function formatDuration(ms?: number) {
+  if (!ms || ms <= 0) return '';
+  const s = Math.round(ms / 1000);
+  const mm = String(Math.floor(s / 60)).padStart(2, '0');
+  const ss = String(s % 60).padStart(2, '0');
+  return `${mm}:${ss}`;
+}
 
 export default MessageList;
 
