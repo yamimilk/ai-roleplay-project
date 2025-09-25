@@ -32,7 +32,7 @@ public class TTSService {
         );
 
         Map<String, Object> response = webClient.post()
-                .uri("/audio/speech")
+                .uri("/voice/tts")
                 .header("Authorization", "Bearer " + apiKey)
                 .bodyValue(requestBody)
                 .retrieve()

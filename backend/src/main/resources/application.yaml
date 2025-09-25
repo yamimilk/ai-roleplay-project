@@ -1,5 +1,7 @@
 server:
   port: 8080
+  address: 0.0.0.0
+
 
 # MyBatis??
 mybatis:
@@ -16,6 +18,8 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+
 
 llm:
   base-url: https://openai.qiniu.com/v1
@@ -36,6 +40,10 @@ tts:
   base-url: https://openai.qiniu.com/v1
   api-key: sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0
   model: tts
+
+ngrok:
+  url: https://hingeless-servomechanically-janel.ngrok-free.dev
+
 #logging:
 ##  level:
 ##    root: info
