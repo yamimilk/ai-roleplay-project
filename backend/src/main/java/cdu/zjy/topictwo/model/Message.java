@@ -4,6 +4,7 @@ package cdu.zjy.topictwo.model;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+
 @Data
 public class Message {
     private Long id;

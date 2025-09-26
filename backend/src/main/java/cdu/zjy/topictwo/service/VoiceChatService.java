@@ -48,23 +48,13 @@ public class VoiceChatService {
         File dir = new File(audioPath);
         if (!dir.exists()) dir.mkdirs();
 
-        String rawFilename = UUID.randomUUID() + ".webm";
+        String rawFilename = UUID.randomUUID() + ".wav";
         File rawFile = new File(dir, rawFilename);
         file.transferTo(rawFile);
 
-        // 2️⃣ 转码为标准 wav
-        String wavFilename = UUID.randomUUID() + ".wav";
-        File wavFile = new File(dir, wavFilename);
-        ProcessBuilder pb = new ProcessBuilder(
-                "ffmpeg", "-y", "-i",
-                rawFile.getAbsolutePath(),
-                "-vn", "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le",
-                "-f", "wav", wavFile.getAbsolutePath()
-        );
-        pb.inheritIO().start().waitFor();
 
         // 3️⃣ 用户音频的公网 URL（立即返回给前端）
-        String audioUrl = ngrokUrl + "/uploads/audio/" + wavFilename;
+        String audioUrl = ngrokUrl + "/uploads/audio/" + rawFilename;
 
         // 4️⃣ 保存用户消息到数据库，立即可听
         Message userMsg = new Message();
@@ -83,37 +73,50 @@ public class VoiceChatService {
         // 6️⃣ 异步处理 ASR → LLM → TTS → 保存 AI 消息
         CompletableFuture.runAsync(() -> {
             try {
-                // ASR 转文字
-                String userText = asrService.transcribe(wavFilename);
-
-                // 保存用户消息的文字内容（可选）
-                userMsg.setContent(userText);
-//                messageMapper.insert(userMsg);
-
-                // 调用 LLM 生成 AI 回复
+                // 1️⃣ ASR
+                System.out.println("🎤 开始执行 ASR...");
+                String userText = asrService.transcribe(rawFilename);
+                System.out.println("🎤 ASR 结果: " + userText);
+                // 2️⃣ LLM
+                System.out.println("🤖 调用 LLM...");
                 String aiText = llmService.chat(roleId, userText);
+                System.out.println("🤖 LLM 回复: " + aiText);
 
-                // 调用 TTS 生成 AI 语音
-                byte[] aiAudio = ttsService.synthesize(aiText);
-                String aiFilename = UUID.randomUUID() + ".wav";
+                System.out.println("🗣️ 调用 TTS...");
+                // 3️⃣ TTS
+                String base64Audio = ttsService.synthesize(aiText);
+
+                // 4️⃣ Base64 解码并写文件
+                if (base64Audio.contains(",")) {
+                    base64Audio = base64Audio.split(",")[1];
+                }
+                byte[] audioBytes = java.util.Base64.getDecoder().decode(base64Audio);
+
+                String aiFilename = UUID.randomUUID() + ".wav"; // 或 mp3
                 File aiFile = new File(dir, aiFilename);
-                Files.write(aiFile.toPath(), aiAudio);
+                java.nio.file.Files.write(aiFile.toPath(), audioBytes);
+                System.out.println("打印转化文件名"+ aiFilename);
 
-                // 保存 AI 消息
+                // 5️⃣ 构建 URL
+                String aiAudioUrl = ngrokUrl + "/uploads/audio/" + aiFilename;
+                System.out.println("💾 保存 AI 消息到数据库...");
+                System.out.println("<UNK> <UNK> AI <UNK>: " + aiAudioUrl);
+
+                // 6️⃣ 插入数据库
                 Message aiMsg = new Message();
                 aiMsg.setConversationId(conversationId);
-                aiMsg.setSender("assistant");
+                aiMsg.setSender("role");
                 aiMsg.setContent(aiText);
-                aiMsg.setAudioUrl(ngrokUrl + "/uploads/audio/" + aiFilename);
+                aiMsg.setAudioUrl(aiAudioUrl);
                 aiMsg.setCreatedAt(LocalDateTime.now());
                 messageMapper.insert(aiMsg);
 
-                // 更新会话最新消息
-                conversationMapper.updateLastMessage(conversationId, aiText);
+                System.out.println("💾更新会话消息");
+                // 7️⃣ 更新会话最后消息
+                conversationMapper.updateLastMessage(conversationId, aiAudioUrl);
 
-                // 如果前端有 WebSocket，可在这里推送 AI 消息
             } catch (Exception e) {
-                e.printStackTrace(); // 记录异常，不阻塞用户体验
+                e.printStackTrace();
             }
         });
 

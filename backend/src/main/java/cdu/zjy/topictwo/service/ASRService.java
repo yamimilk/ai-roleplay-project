@@ -25,7 +25,6 @@ public class ASRService {
     }
 
     public String transcribe(String filename) {
-        // 拼接公网可访问 URL
         String audioUrl = ngrokUrl + "/uploads/audio/" + filename;
 
         Map<String, Object> requestBody = Map.of(
@@ -45,9 +44,16 @@ public class ASRService {
                 .bodyToMono(Map.class)
                 .block();
 
-        if (response != null && response.containsKey("text")) {
-            return (String) response.get("text");
+        if (response != null && response.containsKey("data")) {
+            Map<String, Object> data = (Map<String, Object>) response.get("data");
+            if (data != null && data.containsKey("result")) {
+                Map<String, Object> result = (Map<String, Object>) data.get("result");
+                if (result != null && result.containsKey("text")) {
+                    return (String) result.get("text");
+                }
+            }
         }
         return "[ASR 无结果]";
     }
+
 }

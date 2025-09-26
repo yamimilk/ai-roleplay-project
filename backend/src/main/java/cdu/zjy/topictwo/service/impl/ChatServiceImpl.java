@@ -101,9 +101,9 @@ public class ChatServiceImpl implements ChatService {
         // 6. 构造返回
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         ChatMessageDTO userDto = new ChatMessageDTO("user", userMsg.getContent(),
-                userMsg.getCreatedAt().format(formatter));
+                userMsg.getCreatedAt().format(formatter),null);
         ChatMessageDTO aiDto = new ChatMessageDTO("assistant", aiMsg.getContent(),
-                aiMsg.getCreatedAt().format(formatter));
+                aiMsg.getCreatedAt().format(formatter),null);
 
         ChatResponse response = new ChatResponse();
 //        response.setSessionId(conversationId.toString());
@@ -145,7 +145,8 @@ public class ChatServiceImpl implements ChatService {
                 .map(m -> new ChatMessageDTO(
                         "user".equals(m.getSender()) ? "user" : "assistant",
                         m.getContent(),
-                        m.getCreatedAt().format(formatter)
+                        m.getCreatedAt().format(formatter),
+                        m.getAudioUrl()
                 ))
                 .toList();
 

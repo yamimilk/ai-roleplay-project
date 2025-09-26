@@ -39,7 +39,7 @@ asr:
 tts:
   base-url: https://openai.qiniu.com/v1
   api-key: sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0
-  model: tts
+#  model: tts
 
 ngrok:
   url: https://hingeless-servomechanically-janel.ngrok-free.dev

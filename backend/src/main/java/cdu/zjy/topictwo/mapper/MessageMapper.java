@@ -10,4 +10,6 @@ public interface MessageMapper {
     List<Message> selectByConversationId(Long conversationId);
 
     void insert(Message message);
+
+    void updateMessage(Long id, String userText);
 }

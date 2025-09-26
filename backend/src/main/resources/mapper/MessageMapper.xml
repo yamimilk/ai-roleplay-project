@@ -14,6 +14,20 @@
         <result property="audioUrl" column="audio_url"/>
     </resultMap>
 
+    <update id="updateMessage">
+        UPDATE message
+        <set>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="audioUrl != null">
+                audio_url = #{audioUrl},
+            </if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
     <select id="selectByConversationId" resultMap="MessageResultMap">
         SELECT * FROM message WHERE conversation_id = #{conversationId} ORDER BY created_at ASC
     </select>

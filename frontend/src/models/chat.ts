@@ -92,11 +92,18 @@ export default function useChatModel() {
     try {
       const data = await getConversationMessages(serverId);
       const arr = (data?.messages || data?.data || []) as any[];
-      const mapped: ChatMessage[] = arr.map((m, idx) => ({
-        id: `${serverId}-${idx}`,
-        role: mapDtoToUi(m.user),
-        content: m.content,
-      }));
+      const mapped: ChatMessage[] = arr.map((m, idx) => {
+        // 判断是否为语音消息：content为null且有audioUrl
+        const isAudio = !m.content && m.audioUrl;
+        return {
+          id: `${serverId}-${idx}`,
+          role: mapDtoToUi(m.user),
+          content: m.content || '',
+          type: isAudio ? 'audio' : 'text',
+          audioUrl: m.audioUrl,
+          status: isAudio ? 'done' : undefined,
+        };
+      });
       setMessagesMap((m) => ({ ...m, [cid]: mapped }));
     } catch {}
   };
@@ -163,6 +170,18 @@ export default function useChatModel() {
       // 3️⃣ 更新 sessionId（如果返回）
       if (resp.sessionId) setSessionId(resp.sessionId);
   
+ // 添加调试日志
+ console.log('语音上传响应:', resp);
+ console.log('音频URL:', resp.audioUrl);
+ 
+ // 测试音频URL是否可访问
+ if (resp.audioUrl) {
+     const audio = new Audio(resp.audioUrl);
+     audio.oncanplay = () => console.log('音频可播放');
+     audio.onerror = () => console.log('音频加载失败');
+     audio.load();
+ }
+
       // 4️⃣ 替换临时语音气泡状态为 done，并更新 URL 为后端返回的可播放 URL
       setMessagesMap((m) => ({
         ...m,

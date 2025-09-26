@@ -12,12 +12,12 @@ public class ChatMessageDTO {
     private String audioUrl;  // 语音文件URL/路径，可选
 
     // 提供一个3参构造器，audioUrl 默认置空
-    public ChatMessageDTO(String user, String content, String createdAt) {
-        this.user = user;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.audioUrl = null;
-    }
+//    public ChatMessageDTO(String user, String content, String createdAt) {
+//        this.user = user;
+//        this.content = content;
+//        this.createdAt = createdAt;
+//        this.audioUrl = null;
+//    }
 
     // 也可以用全参构造器（手写 or Lombok @AllArgsConstructor）
     public ChatMessageDTO(String user, String content, String createdAt, String audioUrl) {
