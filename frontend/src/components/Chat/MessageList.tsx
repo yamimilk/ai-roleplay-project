@@ -30,7 +30,7 @@ const MessageList: React.FC<Props> = ({ messages }) => {
           <List.Item style={{ border: 'none', padding: '8px 0' }}>
             <div style={{ width: '100%', display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
               {m.role === 'assistant' && <Avatar src={m.avatar} style={{ marginRight: 8 }}>A</Avatar>}
-              {m.type !== 'audio' ? (
+              {(m.audioUrl ? 'audio' : (m.type || 'text')) !== 'audio' ? (
                 <div
                   style={{
                     maxWidth: '70%',
@@ -61,63 +61,19 @@ const MessageList: React.FC<Props> = ({ messages }) => {
                     <Spin size="small" />
                   ) : m.status === 'failed' ? (
                     <Typography.Text style={{ color: m.role === 'user' ? '#fff' : '#ff4d4f' }}>!</Typography.Text>
-                  ) : (
-                    <button 
-                      onClick={async () => {
-                        console.log('点击播放按钮，音频URL:', m.audioUrl);
-                        if (!m.audioUrl) {
-                          message.error('音频URL无效');
-                          return;
-                        }
-                        
-                        // 先测试URL是否可访问
-                        try {
-                          const response = await fetch(m.audioUrl, { method: 'HEAD' });
-                          console.log('音频URL响应状态:', response.status);
-                          if (!response.ok) {
-                            message.error(`音频文件不可访问: ${response.status}`);
-                            return;
-                          }
-                        } catch (fetchError) {
-                          console.error('音频URL访问失败:', fetchError);
-                          message.error('音频文件访问失败，请检查网络连接');
-                          return;
-                        }
-                        
-                        try {
-                          const audio = new Audio(m.audioUrl);
-                          audio.preload = 'auto';
-                          
-                          // 添加事件监听器
-                          audio.onloadstart = () => console.log('开始加载音频:', m.audioUrl);
-                          audio.oncanplay = () => console.log('音频可以播放:', m.audioUrl);
-                          audio.onerror = (e) => {
-                            console.error('音频加载失败:', e, 'URL:', m.audioUrl);
-                            message.error('音频加载失败，请检查网络连接');
-                          };
-                          audio.onload = () => console.log('音频加载完成:', m.audioUrl);
-                          
-                          console.log('尝试播放音频...');
-                          await audio.play();
-                          console.log('音频播放成功');
-                        } catch (error) {
-                          console.error('音频播放失败:', error, 'URL:', m.audioUrl);
-                          message.error('音频播放失败，请重试');
-                        }
+                  ) : m.audioUrl ? (
+                    <audio
+                      controls
+                      src={m.audioUrl}
+                      style={{ width: 220 }}
+                      preload="none"
+                      onPlay={() => console.log('开始播放:', m.audioUrl)}
+                      onError={(e) => {
+                        console.error('音频播放错误', e);
+                        message.error('音频无法播放');
                       }}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'inherit',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        padding: '4px',
-                        borderRadius: '4px',
-                      }}
-                    >
-                      ▶
-                    </button>
-                  )}
+                    />
+                  ) : null}
                   <span>{formatDuration(m.durationMs)}</span>
                 </div>
               )}
