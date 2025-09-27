@@ -14,4 +14,5 @@ public interface RoleService {
     List<Role> getAllRoles();
     Integer getRoleCount();
     List<AllRoleDTO> getAllRolesName();
+    String getRoleVoice(String roleId);
 }

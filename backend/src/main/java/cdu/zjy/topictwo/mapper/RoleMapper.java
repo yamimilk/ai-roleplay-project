@@ -13,4 +13,5 @@ public interface RoleMapper {
     int getRoleCount();
     Role addRole(Role role);
     List<AllRoleDTO> getAllRolesName();
+    String getRoleVoice(String roleId);
 }

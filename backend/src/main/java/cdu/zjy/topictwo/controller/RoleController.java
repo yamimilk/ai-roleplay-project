@@ -30,6 +30,11 @@ public class RoleController {
         return roleService.getAllRolesName();
     }
 
+    @GetMapping("/voice")
+    public String getRoleVoiceById(@RequestParam String roleId){
+        return roleService.getRoleVoice(roleId);
+    }
+
 
 
 }

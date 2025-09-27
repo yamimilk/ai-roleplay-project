@@ -31,4 +31,8 @@
         SELECT role_id , name
         FROM roles;
     </select>
+
+    <select id="getRoleVoice" resultType="java.lang.String">
+        SELECT voice from roles where role_id = #{roleId}
+    </select>
 </mapper>

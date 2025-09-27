@@ -22,6 +22,7 @@ const LoginPage: React.FC = () => {
       const data = await res.json();
       const {token,username,user_id} = data;
       // 保存 token 和用户信息
+      console.log("后端返回的新 token =", data.token);
       localStorage.setItem('token', data.token);
       localStorage.setItem('username', data.username);
       localStorage.setItem('user_id',data.user_id);

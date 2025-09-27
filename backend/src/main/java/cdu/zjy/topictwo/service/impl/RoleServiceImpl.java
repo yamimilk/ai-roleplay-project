@@ -35,4 +35,7 @@ public  class RoleServiceImpl implements RoleService {
 
     @Override
     public List<AllRoleDTO> getAllRolesName(){return  roleMapper.getAllRolesName();}
+
+    @Override
+    public String getRoleVoice(String roleId){return roleMapper.getRoleVoice(roleId);}
 }
