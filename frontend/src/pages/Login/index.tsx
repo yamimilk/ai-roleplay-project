@@ -1,24 +1,48 @@
-import { history } from '@umijs/max';
+import { history, useModel } from '@umijs/max';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Form, Input, Row, Typography, message } from 'antd';
 import React from 'react';
-import { loginLocal } from '@/services/auth';
+
 
 const { Title } = Typography;
 
 const LoginPage: React.FC = () => {
   const [form] = Form.useForm();
+  const { setInitialState } = useModel('@@initialState');
 
-  const onFinish = async (values: { username: string; password: string }) => {
-    if (!values.username) {
-      message.error('请输入用户名');
-      return;
+ const onFinish = async (values: { username: string; password: string }) => {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const {token,username,user_id} = data;
+      // 保存 token 和用户信息
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('user_id',data.user_id);
+
+      message.success('登录成功');
+       setInitialState({
+              name: data.username,
+              // avatar: false,
+              isLogin: true,
+              currentUser: {username,user_id}
+            });
+      history.push('/'); // 跳转到首页
+    } else {
+      const err = await res.json();
+      message.error(err.error || '登录失败');
     }
-    // Demo: 本地登录，直接写入本地
-    loginLocal({ userId: values.username, nickname: values.username });
-    message.success('登录成功');
-    history.push('/chat');
-  };
+  } catch (e) {
+    message.error('网络错误，请稍后再试');
+  }
+};
+
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: '100vh', padding: 16 }}>

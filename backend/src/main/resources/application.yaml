@@ -44,6 +44,9 @@ tts:
 ngrok:
   url: https://hingeless-servomechanically-janel.ngrok-free.dev
 
+jwt:
+ secret: your-super-long-random-secret-key
+
 #logging:
 ##  level:
 ##    root: info

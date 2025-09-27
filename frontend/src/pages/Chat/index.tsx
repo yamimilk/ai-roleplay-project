@@ -4,7 +4,6 @@ import ConversationList from '@/components/Chat/ConversationList';
 import MessageList from '@/components/Chat/MessageList';
 import MessageInput from '@/components/Chat/MessageInput';
 import useChatModel from '@/models/chat';
-import { isLoggedIn } from '@/services/auth';
 import { history } from '@umijs/max';
 import { queryChatRoleList } from '@/services/chat';
 
@@ -12,9 +11,9 @@ const { Sider, Content, Header } = Layout;
 const { useBreakpoint } = Grid;
 
 const ChatPage: React.FC = () => {
-  if (!isLoggedIn()) {
-    history.replace('/login');
-  }
+  // if (!isLoggedIn()) {
+  //   history.replace('/login');
+  // }
 
   const screens = useBreakpoint();
   const {

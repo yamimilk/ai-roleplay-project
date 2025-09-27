@@ -13,8 +13,30 @@ const RegisterPage: React.FC = () => {
       message.error('两次输入的密码不一致');
       return;
     }
-    message.success('注册成功，请登录');
-    history.push('/login');
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        message.success(data.message || '注册成功，请登录');
+        history.push('/login');
+      } else {
+        const err = await res.json();
+        message.error(err.error || '注册失败');
+      }
+    } catch (e) {
+      message.error('网络错误，请稍后再试');
+    }
   };
 
   return (
@@ -46,5 +68,3 @@ const RegisterPage: React.FC = () => {
 };
 
 export default RegisterPage;
-
-

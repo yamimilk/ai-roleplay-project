@@ -1,10 +1,16 @@
-export default (initialState: API.UserInfo) => {
-  // 在这里按照初始化数据定义项目中的权限，统一管理
-  // 参考文档 https://umijs.org/docs/max/access
-  const canSeeAdmin = !!(
-    initialState && initialState.name !== 'dontHaveAccess'
-  );
+export default function access(initialState: any) {
+  console.log('🔍 initialState in access.ts:', initialState);
+
+  const roleId = initialState?.currentUser?.role_id;
+  const isAdmin = String(roleId) === '1';
+  const isLoggedIn = !!initialState?.isLogin;
+
+  console.log('🛂 当前角色 ID:', roleId);
+  console.log('🔐 是否已登录:', isLoggedIn);
+
   return {
-    canSeeAdmin,
+    isLoggedIn,
+    isAdmin,
+    isLoggedInAndAdmin: isLoggedIn && isAdmin, // ✅ 新增这个
   };
-};
+}
