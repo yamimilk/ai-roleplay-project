@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public interface RoleService {
     //void addRole(Role role);
-    Role getRoleById(String id);
+    Role getRoleById(String roleId);
     List<Role> getAllRoles();
     Integer getRoleCount();
     List<AllRoleDTO> getAllRolesName();

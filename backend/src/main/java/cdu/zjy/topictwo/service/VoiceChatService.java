@@ -84,7 +84,7 @@ public class VoiceChatService {
 
                 System.out.println("🗣️ 调用 TTS...");
                 // 3️⃣ TTS
-                String base64Audio = ttsService.synthesize(aiText);
+                String base64Audio = ttsService.synthesize(roleId,aiText);
 
                 // 4️⃣ Base64 解码并写文件
                 if (base64Audio.contains(",")) {
