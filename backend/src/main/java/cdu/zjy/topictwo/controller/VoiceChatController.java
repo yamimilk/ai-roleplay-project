@@ -24,6 +24,7 @@ public class VoiceChatController {
     public ResponseEntity<ChatResponse> voiceChat(
             @RequestParam("conversationId") Long conversationId,
             @RequestParam("roleId") Long roleId,
+//            @RequestParam("background") String background,
             @RequestParam("file") MultipartFile audioFile) throws Exception {
 
         ChatResponse response = voiceChatService.handleVoiceMessage(conversationId, String.valueOf(roleId), audioFile);

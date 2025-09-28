@@ -1,5 +1,6 @@
 package cdu.zjy.topictwo.service;
 
+import cdu.zjy.topictwo.model.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,9 +26,10 @@ public class LLMService {
     }
 
     @SuppressWarnings("unchecked")
-    public String chat(String roleId, String userMessage) {
+    public String chat(Role role, String userMessage) {
         // prompt 简单拼接：后续可以替换为数据库里角色设定
-        String prompt = "你现在扮演 " + roleId + "，请用该角色的语气回答：\n" + userMessage;
+        String prompt = "你现在扮演 " + role + " 请用该角色的语气回答：\n" + userMessage;
+        System.out.println("扮演角色提示词"+prompt);
 
         Map<String, Object> requestBody = Map.of(
                 "model", model,

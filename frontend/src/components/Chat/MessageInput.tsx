@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Input, Space } from 'antd';
+import { Button, Input } from 'antd';
 
 interface Props {
   onSend: (text: string) => void;
@@ -26,9 +26,7 @@ const MessageInput: React.FC<Props> = ({ onSend, onSendVoice, loading }) => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunksRef.current.push(e.data);
-        }
+        if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
@@ -50,39 +48,42 @@ const MessageInput: React.FC<Props> = ({ onSend, onSendVoice, loading }) => {
     setRecording(false);
   };
 
-  const hasText = text.trim().length > 0;
-
   return (
-    <Space.Compact style={{ width: '100%', alignItems: 'center' }}>
-      {!hasText ? (
+    <Input
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      placeholder="输入消息..."
+      // autoSize={{ minRows: 1, maxRows: 4 }}
+      onPressEnter={(e) => {
+        if (!e.shiftKey) {
+          e.preventDefault();
+          triggerSend();
+        }
+      }}
+      suffix={
         <>
-          <Button onClick={recording ? stopRecording : startRecording} type="text">
+          <Button
+            onClick={recording ? stopRecording : startRecording}
+            type="text"
+            style={{ marginRight: 4 }}
+          >
             {recording ? '停止' : '🎤'}
           </Button>
           <Button type="text" disabled>
             📞
           </Button>
+          {text.trim() && (
+            <Button type="primary" onClick={triggerSend} loading={loading}>
+              ↑
+            </Button>
+          )}
         </>
-      ) : null}
-      <Input.TextArea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        autoSize={{ minRows: 1, maxRows: 4 }}
-        placeholder="输入消息..."
-        onPressEnter={(e) => {
-          if (!e.shiftKey) {
-            e.preventDefault();
-            triggerSend();
-          }
-        }}
-      />
-      {hasText ? (
-        <Button type="primary" onClick={triggerSend} loading={loading}>↑</Button>
-      ) : null}
-    </Space.Compact>
+      }
+      onClick={() => {
+        if (text.trim()) triggerSend(); // 点击输入框也可直接发送
+      }}
+    />
   );
 };
 
 export default MessageInput;
-
-

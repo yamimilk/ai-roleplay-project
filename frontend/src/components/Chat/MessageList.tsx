@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, List, Typography, Spin, message } from 'antd';
+import VoiceMessage from './VoiceMessage'
 
 export interface ChatMessage {
   id: string;
@@ -28,8 +29,20 @@ const MessageList: React.FC<Props> = ({ messages }) => {
         dataSource={messages}
         renderItem={(m) => (
           <List.Item style={{ border: 'none', padding: '8px 0' }}>
-            <div style={{ width: '100%', display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
-              {m.role === 'assistant' && <Avatar src={m.avatar} style={{ marginRight: 8 }}>A</Avatar>}
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start',
+              }}
+            >
+              {m.role === 'assistant' && (
+                <Avatar src={m.avatar} style={{ marginRight: 8 }}>
+                  A
+                </Avatar>
+              )}
+
+              {/* 判断是文字还是语音 */}
               {(m.audioUrl ? 'audio' : (m.type || 'text')) !== 'audio' ? (
                 <div
                   style={{
@@ -41,44 +54,22 @@ const MessageList: React.FC<Props> = ({ messages }) => {
                     whiteSpace: 'pre-wrap',
                   }}
                 >
-                  <Typography.Text style={{ color: 'inherit' }}>{m.content}</Typography.Text>
+                  <Typography.Text style={{ color: 'inherit' }}>
+                    {m.content}
+                  </Typography.Text>
                 </div>
               ) : (
-                <div
-                  style={{
-                    maxWidth: '70%',
-                    background: m.role === 'user' ? '#1677ff' : '#f5f5f5',
-                    color: m.role === 'user' ? '#fff' : 'inherit',
-                    borderRadius: 8,
-                    padding: '8px 12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                  }}
-                  className="voice-message"
-                >
-                  {m.status === 'uploading' ? (
-                    <Spin size="small" />
-                  ) : m.status === 'failed' ? (
-                    <Typography.Text style={{ color: m.role === 'user' ? '#fff' : '#ff4d4f' }}>!</Typography.Text>
-                  ) : m.audioUrl ? (
-                    <audio
-                      controls
-                      src={m.audioUrl}
-                      style={{ width: 220 }}
-                      preload="none"
-                      onPlay={() => console.log('开始播放:', m.audioUrl)}
-                      onError={(e) => {
-                        console.error('音频播放错误', e);
-                        message.error('音频无法播放');
-                      }}
-                    />
-                  ) : null}
-                  <span>{formatDuration(m.durationMs)}</span>
-                </div>
+                // 🎵 动态波形语音条
+                <VoiceMessage
+                  audioUrl={m.audioUrl!}
+                  durationMs={m.durationMs}
+                  color={m.role === 'user' ? '#fff' : '#1677ff'}
+                />
               )}
+
               {m.role === 'user' && <Avatar style={{ marginLeft: 8 }}>U</Avatar>}
             </div>
+
           </List.Item>
         )}
       />

@@ -5,6 +5,8 @@ import cdu.zjy.topictwo.dto.ChatResponse;
 import cdu.zjy.topictwo.mapper.ConversationMapper;
 import cdu.zjy.topictwo.mapper.MessageMapper;
 import cdu.zjy.topictwo.model.Message;
+import cdu.zjy.topictwo.model.Role;
+import cdu.zjy.topictwo.util.MessagePublisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,22 +30,30 @@ public class VoiceChatService {
     private final ASRService asrService;
     private final LLMService llmService;
     private final TTSService ttsService;
+    private final RoleService roleService;
     private final MessageMapper messageMapper;
     private final ConversationMapper conversationMapper;
+    private final MessagePublisher publisher;
 
     public VoiceChatService(ASRService asrService,
                             LLMService llmService,
-                            TTSService ttsService,
+                            TTSService ttsService, RoleService roleService,
                             MessageMapper messageMapper,
-                            ConversationMapper conversationMapper) {
+                            ConversationMapper conversationMapper, MessagePublisher publisher) {
         this.asrService = asrService;
         this.llmService = llmService;
         this.ttsService = ttsService;
+        this.roleService = roleService;
         this.messageMapper = messageMapper;
         this.conversationMapper = conversationMapper;
+        this.publisher = publisher;
     }
 
     public ChatResponse handleVoiceMessage(Long conversationId, String roleId, MultipartFile file) throws Exception {
+        //获取角色信息或系统提示词
+        Role role = roleService.getRoleById(roleId);
+
+
         // 1️⃣ 保存用户上传的原始文件
         File dir = new File(audioPath);
         if (!dir.exists()) dir.mkdirs();
@@ -79,7 +89,7 @@ public class VoiceChatService {
                 System.out.println("🎤 ASR 结果: " + userText);
                 // 2️⃣ LLM
                 System.out.println("🤖 调用 LLM...");
-                String aiText = llmService.chat(roleId, userText);
+                String aiText = llmService.chat(role, userText);
                 System.out.println("🤖 LLM 回复: " + aiText);
 
                 System.out.println("🗣️ 调用 TTS...");
@@ -114,6 +124,14 @@ public class VoiceChatService {
                 System.out.println("💾更新会话消息");
                 // 7️⃣ 更新会话最后消息
                 conversationMapper.updateLastMessage(conversationId, aiAudioUrl);
+                // 推送到 SSE
+//                ChatMessageDTO aiDto = new ChatMessageDTO("assistant", aiMsg.getContent(),
+//                        aiMsg.getCreatedAt().toString(), aiMsg.getAudioUrl());
+//                publisher.publish(conversationId, aiDto);
+                ChatResponse resp = new ChatResponse();
+                resp.setConversationId(conversationId);
+                ChatMessageDTO aiDto = new ChatMessageDTO("user", "", userMsg.getCreatedAt().toString(), userMsg.getAudioUrl());
+                resp.setMessages(List.of(aiDto));
 
             } catch (Exception e) {
                 e.printStackTrace();

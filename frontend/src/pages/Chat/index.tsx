@@ -4,6 +4,7 @@ import ConversationList from '@/components/Chat/ConversationList';
 import MessageList from '@/components/Chat/MessageList';
 import MessageInput from '@/components/Chat/MessageInput';
 import useChatModel from '@/models/chat';
+
 import { history } from '@umijs/max';
 import { queryChatRoleList } from '@/services/chat';
 
