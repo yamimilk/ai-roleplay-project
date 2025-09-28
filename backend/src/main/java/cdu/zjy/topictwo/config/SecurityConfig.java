@@ -33,6 +33,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()  // 登录注册放行
+                        .requestMatchers(
+                                "/uploads/audio/**" // 放行音频
+                        ).permitAll()
                         .anyRequest().authenticated()                // 其他请求需要认证
                 )
                 .exceptionHandling(e -> e

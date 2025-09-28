@@ -23,14 +23,14 @@ class TopicTwoApplicationTests {
     @Autowired
     private TTSService ttsService;
 
-    @Test
-    public void testSynthesizeDebug() {
-        TTSService tts = new TTSService("https://openai.qiniu.com/v1");
-        ReflectionTestUtils.setField(tts, "apiKey", "sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0");
-
-//        byte[] audio = tts.synthesize("你好，世界！");
-//        System.out.println("生成音频字节长度：" + audio.length);
-    }
+//    @Test
+//    public void testSynthesizeDebug() {
+//        TTSService tts = new TTSService("https://openai.qiniu.com/v1");
+//        ReflectionTestUtils.setField(tts, "apiKey", "sk-341444a38bf21126dc624193f3f1c8db63dbbce3da2990fcce9a0f5c5bb828c0");
+//
+////        byte[] audio = tts.synthesize("你好，世界！");
+////        System.out.println("生成音频字节长度：" + audio.length);
+//    }
 
     @Test
     void testTTSServiceExists() {

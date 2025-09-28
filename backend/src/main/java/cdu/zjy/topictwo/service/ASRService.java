@@ -35,6 +35,9 @@ public class ASRService {
                 )
         );
 
+        System.out.println("ASR 请求体: " + requestBody);
+
+
         Map<String, Object> response = webClient.post()
                 .uri("/voice/asr")
                 .header("Authorization", "Bearer " + apiKey)
@@ -43,6 +46,8 @@ public class ASRService {
                 .retrieve()
                 .bodyToMono(Map.class)
                 .block();
+
+
 
         if (response != null && response.containsKey("data")) {
             Map<String, Object> data = (Map<String, Object>) response.get("data");

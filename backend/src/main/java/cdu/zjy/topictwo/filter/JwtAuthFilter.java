@@ -30,7 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain  filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        System.out.println("请求路径: " + request.getRequestURI());
+//        System.out.println("请求路径: " + request.getRequestURI());
 
         // 登录注册接口直接放行
         if (path.startsWith("/api/auth/")) {
