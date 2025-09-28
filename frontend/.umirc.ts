@@ -20,7 +20,7 @@ export default defineConfig({
     { path: '/', redirect: '/chat' },
     { name: '登录', path: '/login', component: './Login',layout: false },
     { name: '注册', path: '/register', component: './Register',layout: false },
-    { name: '聊天', path: '/chat', component: './Chat' },
+    { name: '聊天', path: '/chat', component: './Chat',access: 'isLoggedIn', },
   ],
   npmClient: 'pnpm',
 });

@@ -100,7 +100,7 @@ const [roleMap, setRoleMap] = useState<Map<number, string>>(new Map());
             <Typography.Text strong style={{ marginRight: 8 }}>角色</Typography.Text>
             <Select
               value={roleId || undefined}
-              onChange={(value) => setRoleId(Number(value))}
+              onChange={(value) => setRoleId(value)}
               style={{ width: 200 }}
               loading={loadingRoles}
               placeholder="请选择角色"
