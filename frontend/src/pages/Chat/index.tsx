@@ -15,7 +15,7 @@ const ChatPage: React.FC = () => {
   // if (!isLoggedIn()) {
   //   history.replace('/login');
   // }
-
+const [roleMap, setRoleMap] = useState<Map<number, string>>(new Map());
   const screens = useBreakpoint();
   const {
     roleId, setRoleId,
@@ -39,10 +39,16 @@ const ChatPage: React.FC = () => {
           seen.add(key);
           return true;
         });
+
+          // 构建 Map<roleId, avatarUrl>
+        const map = new Map<number, string>();
+        dedup.forEach((r: any) => map.set(r.roleId ?? r.id, r.avatarUrl));
+        setRoleMap(map);
+
         const opts = dedup.map((r: any) => ({ label: r.name, value: String(r.roleId ?? r.id) }));
         setRoleOptions(opts);
         if (!roleId && opts.length > 0) {
-          setRoleId(opts[0].value);
+          setRoleId(0);
         }
       } finally {
         setLoadingRoles(false);
@@ -94,7 +100,7 @@ const ChatPage: React.FC = () => {
             <Typography.Text strong style={{ marginRight: 8 }}>角色</Typography.Text>
             <Select
               value={roleId || undefined}
-              onChange={setRoleId}
+              onChange={(value) => setRoleId(Number(value))}
               style={{ width: 200 }}
               loading={loadingRoles}
               placeholder="请选择角色"
@@ -105,7 +111,8 @@ const ChatPage: React.FC = () => {
         </Header>
         <Content style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)' }}>
           <div style={{ flex: 1, minHeight: 0 }}>
-            <MessageList messages={messages} />
+            {/* <MessageList messages={messages} roleMap={roleMap} /> */}
+            {roleMap.size > 0 && <MessageList messages={messages} roleMap={roleMap} />}
           </div>
           <div style={{ padding: 12, borderTop: '1px solid #f0f0f0' }}>
             <MessageInput onSend={send} onSendVoice={sendVoice} loading={sending} />

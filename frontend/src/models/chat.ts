@@ -6,7 +6,7 @@ import { uploadVoiceChat } from '@/services/chat';
 
 export default function useChatModel() {
   const [sessionId, setSessionId] = useState<string | undefined>();
-  const [roleId, setRoleId] = useState<string>('');
+  const [roleId, setRoleId] = useState<number>(0);
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [activeId, setActiveId] = useState<string | undefined>();
   const [activeConversationServerId, setActiveConversationServerId] = useState<number | undefined>();
@@ -16,6 +16,8 @@ export default function useChatModel() {
 
   // 初次加载会话列表（如果后端有数据，则渲染）
   useEffect(() => {
+      if (!roleId)  return;
+    // roleId 已有，去加载会话
     const run = async () => {
       try {
         if (!roleId) return;
@@ -52,6 +54,7 @@ export default function useChatModel() {
         }
       } catch {}
     };
+    
     run();
   }, [roleId]);
 
@@ -95,9 +98,12 @@ export default function useChatModel() {
       const mapped: ChatMessage[] = arr.map((m, idx) => {
         // 判断是否为语音消息：content为null且有audioUrl
         const isAudio = !m.content && m.audioUrl;
+        console.log('原始消息', m);
+
         return {
           id: `${serverId}-${idx}`,
           role: mapDtoToUi(m.user),
+          roleId: m.roleId,
           content: m.content || '',
           type: isAudio ? 'audio' : 'text',
           audioUrl: m.audioUrl,
@@ -107,6 +113,8 @@ export default function useChatModel() {
       setMessagesMap((m) => ({ ...m, [cid]: mapped }));
     } catch {}
   };
+
+  
 
   const send = async (text: string) => {
     const cid = ensureActive();
@@ -127,6 +135,7 @@ export default function useChatModel() {
       const mapped: ChatMessage[] = (resp.messages || []).map((m, idx) => ({
         id: `${serverId || 'local'}-${Date.now()}-${idx}`,
         role: mapDtoToUi(m.user),
+
         content: m.content,
       }));
       setMessagesMap((m) => ({

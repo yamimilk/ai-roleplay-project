@@ -36,6 +36,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/uploads/audio/**" // 放行音频
                         ).permitAll()
+                        .requestMatchers(
+                                "/avatar/**" // 放行音频
+                        ).permitAll()
                         .anyRequest().authenticated()                // 其他请求需要认证
                 )
                 .exceptionHandling(e -> e

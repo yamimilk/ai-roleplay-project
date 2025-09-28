@@ -3,8 +3,9 @@ import { Avatar, List, Typography, Spin, message } from 'antd';
 import VoiceMessage from './VoiceMessage'
 
 export interface ChatMessage {
-  id: string;
+  id: string ;
   role: 'user' | 'assistant';
+  roleId?: number;
   type?: 'text' | 'audio';
   content: string; // for text
   audioUrl?: string; // for audio
@@ -13,12 +14,18 @@ export interface ChatMessage {
   avatar?: string;
 }
 
+
 interface Props {
   messages: ChatMessage[];
+  roleMap: Map<number, string>;
 }
 
-const MessageList: React.FC<Props> = ({ messages }) => {
+const MessageList: React.FC<Props> = ({ messages ,roleMap}) => {
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  console.log("打印一下roleMap",roleMap);
+  
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -27,7 +34,13 @@ const MessageList: React.FC<Props> = ({ messages }) => {
     <div style={{ padding: 16, height: '100%', overflowY: 'auto' }}>
       <List
         dataSource={messages}
-        renderItem={(m) => (
+        renderItem={(m) => {
+           const avatarUrl = m.roleId ? roleMap.get(m.roleId) : undefined;
+           console.log("头像是这样的！！！",avatarUrl);
+           console.log(m.roleId);
+           
+           
+           return (
           <List.Item style={{ border: 'none', padding: '8px 0' }}>
             <div
               style={{
@@ -37,9 +50,13 @@ const MessageList: React.FC<Props> = ({ messages }) => {
               }}
             >
               {m.role === 'assistant' && (
-                <Avatar src={m.avatar} style={{ marginRight: 8 }}>
-                  A
-                </Avatar>
+              <Avatar
+                src={avatarUrl} // 找不到就显示空
+                style={{ marginRight: 8 }}
+              >
+                {m.role === 'assistant' ? 'A' : 'U'}
+              </Avatar>
+
               )}
 
               {/* 判断是文字还是语音 */}
@@ -71,7 +88,10 @@ const MessageList: React.FC<Props> = ({ messages }) => {
             </div>
 
           </List.Item>
-        )}
+           )
+        }
+      }     
+      key={roleMap.size}
       />
       <div ref={bottomRef} />
     </div>

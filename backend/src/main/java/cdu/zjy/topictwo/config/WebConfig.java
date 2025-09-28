@@ -10,10 +10,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${app.upload.audio-path}")
     private String audioPath;
 
+    @Value("${avatar.path}")
+    private String avatarPath;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/audio/**")
                 .addResourceLocations("file:///" + audioPath.replace("\\", "/") + "/");
+        registry.addResourceHandler("/avatar/**")
+                .addResourceLocations("file:///" + avatarPath.replace("\\", "/") + "/");
+
     }
 }
 

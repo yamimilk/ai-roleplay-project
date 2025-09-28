@@ -34,6 +34,7 @@ export async function queryChatRoleList() {
 // ---- New APIs aligned with backend ChatController ----
 export interface ChatMessageDTO {
   user: string; // sender identifier
+  roleId?: number; 
   content: string;
   createdAt: string; // ISO timestamp
 }
@@ -45,7 +46,7 @@ export interface ChatResponseDTO {
 }
 
 export interface SendMessageParams {
-  roleId: string; // stringified role id
+  roleId: number; // stringified role id
   message: string;
   conversationId?: string | number;
 }
@@ -76,7 +77,7 @@ export async function getConversationMessages(id: string | number) {
 }
 
 export interface CreateConversationParams {
-  roleId: string;
+  roleId: number;
 }
 
 export async function createConversation(params: CreateConversationParams) {
@@ -95,14 +96,14 @@ export interface VoiceChatResponse {
   audioUrl?: string; // AI 生成语音
 }
 
-export async function uploadVoiceChat(file: Blob, conversationId?: number, roleId?: string) {
+export async function uploadVoiceChat(file: Blob, conversationId?: number, roleId?: number) {
   const form = new FormData();
 
   // 使用时间戳生成文件名，确保后缀 wav
   const filename = `${Date.now()}.wav`;
   form.append('file', file, filename);
 
-  if (roleId) form.append('roleId', roleId);
+  if (roleId) form.append('roleId', String(roleId));
   if (conversationId !== undefined && conversationId !== null) {
     form.append('conversationId', String(conversationId));
   }

@@ -30,6 +30,9 @@ app:
   upload:
     audio-path: D:\Junior\ai-roleplay-project\backend\uploads\audio
 
+avatar:
+  path: D:\Junior\ai-roleplay-project\backend\avatar
+
 
 asr:
   base-url: https://openai.qiniu.com/v1

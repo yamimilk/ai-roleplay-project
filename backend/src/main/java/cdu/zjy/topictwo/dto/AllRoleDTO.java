@@ -6,4 +6,5 @@ import lombok.Data;
 public class AllRoleDTO {
     private Long roleId;
     private String name;
+    private String avatarUrl;
 }

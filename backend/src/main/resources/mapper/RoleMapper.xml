@@ -11,7 +11,7 @@
 
     <!-- 根据 ID 查询角色 -->
     <select id="getRoleById" resultType="cdu.zjy.topictwo.model.Role">
-        SELECT role_id, name, background, catchphrase
+        SELECT role_id, name, background, avatar_url
         FROM roles
         WHERE role_id = #{roleId}
     </select>
@@ -28,7 +28,7 @@
     </select>
 
     <select id="getAllRolesName" resultType="cdu.zjy.topictwo.dto.AllRoleDTO">
-        SELECT role_id , name
+        SELECT role_id , name,avatar_url
         FROM roles;
     </select>
 
